@@ -25,22 +25,15 @@
 
 ```text
 xinyu-mobile-ad-truck-player/
-├─ index.html
-├─ .nojekyll
-├─ README.md
-├─ LICENSE.txt
-├─ assets/
-│  ├─ models/
-│  │  ├─ Xinyu_2.1t_LED_Mobile_Ad_Truck_V2.glb
-│  │  └─ Xinyu_2.1t_LED_Mobile_Ad_Truck_V2.obj
-│  ├─ config/
-│  │  └─ screen_mapping.json
-│  └─ images/
-│     ├─ left_screen_placeholder.jpg
-│     ├─ right_screen_placeholder.jpg
-│     └─ Xinyu_truck_preview_V2.png
-├─ build_xinyu_truck.py
-└─ render_preview.py
+xinyu-mobile-ad-truck-player
+├── index.html
+├── README.md
+├── LICENSE.txt
+├── .nojekyll
+├── assets
+├── build_xinyu_truck.py
+├── render_preview.py
+└── validate_project.py
 ```
 
 ## LED 物件名稱
