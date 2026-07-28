@@ -1,0 +1,13 @@
+{
+  "model": "assets/models/Xinyu_2.1t_LED_Mobile_Ad_Truck_V2.glb",
+  "coordinate_system": {"up": "Y", "units": "meters"},
+  "screens": [
+    {"mesh": "LED_LEFT_MAIN", "role": "left_main", "physical_size_m": [3.69, 1.44], "uv_range": [0.0, 0.7671517672]},
+    {"mesh": "LED_LEFT_REAR", "role": "left_rear_L_wrap", "physical_size_m": [1.12, 1.44], "uv_range": [0.7671517672, 1.0]},
+    {"mesh": "LED_RIGHT_MAIN", "role": "right_main", "physical_size_m": [2.52, 1.44]},
+    {"mesh": "LED_FRONT_HEADER", "role": "front_header_optional", "physical_size_m": [1.68, 0.64]}
+  ],
+  "left_l_wrap": {"total_unfolded_size_m": [4.81, 1.44], "aspect_ratio": 3.3402777778, "recommended_video": "1920x575 or proportional"},
+  "display_finish": {"left_main": "full_bleed_frameless", "left_rear": "full_bleed_frameless", "right_main": "full_bleed_frameless", "left_90_degree_joint": "shared_geometry_edge_zero_gap"},
+  "non_negotiable": {"rear_right_door_mesh": "REAR_RIGHT_ACCESS_DOOR", "note": "The rear-right cargo access door is the only door on the LED cargo box."}
+}
