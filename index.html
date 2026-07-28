@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#07111f" />
+  <title>心禹國際｜2.1 噸 LED 行動廣告車虛擬播放器</title>
+  <meta name="description" content="心禹國際 2.1 噸 LED 行動廣告車 3D 虛擬播放器，支援左側無縫 L 型 LED 與右側滿版 LED 影片預覽。" />
+  <style>
+    :root{--bg:#06101d;--panel:#0b1827;--panel2:#102236;--line:#203951;--text:#eef5fc;--muted:#9eb0c3;--gold:#d6ae59;--blue:#2d9cff;--ok:#44d19d;--danger:#ff7a7a}
+    *{box-sizing:border-box}html,body{height:100%;margin:0;background:var(--bg);color:var(--text);font-family:Inter,"Noto Sans TC","Microsoft JhengHei",system-ui,sans-serif;overflow:hidden}
+    button,input,select{font:inherit}button{cursor:pointer}
+    .app{height:100%;display:grid;grid-template-columns:330px 1fr;grid-template-rows:auto 1fr}
+    header{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;padding:12px 18px;border-bottom:1px solid var(--line);background:linear-gradient(90deg,#081421,#0c1d31);z-index:5}
+    .brand{display:flex;gap:12px;align-items:center}.mark{width:40px;height:40px;border:1px solid #8d6d2f;border-radius:12px;display:grid;place-items:center;color:var(--gold);font-weight:900;background:#090d13}.brand b{display:block;letter-spacing:.05em}.brand small{display:block;color:var(--muted);margin-top:2px}
+    .header-actions{display:flex;gap:8px}.pill{border:1px solid var(--line);background:#0b1928;color:var(--text);padding:8px 11px;border-radius:10px}.pill:hover{border-color:#3f6688}
+    aside{padding:15px;overflow:auto;border-right:1px solid var(--line);background:var(--panel)}
+    .section{border:1px solid var(--line);border-radius:14px;background:rgba(16,34,54,.72);padding:13px;margin-bottom:12px}.section h2{font-size:14px;margin:0 0 10px;color:#fff}.section p,.hint{font-size:12px;line-height:1.55;color:var(--muted);margin:7px 0}
+    .upload{display:block;border:1px dashed #46637d;border-radius:12px;padding:12px;margin:8px 0;background:#0b1725;transition:.2s}.upload:hover{border-color:var(--blue);background:#0d1e30}.upload strong{display:block;font-size:13px}.upload span{display:block;font-size:11px;color:var(--muted);margin-top:4px}.upload input{display:none}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:8px}.btn{border:1px solid var(--line);background:#102337;color:var(--text);border-radius:10px;padding:10px}.btn:hover{border-color:#48779d;background:#15304a}.btn.primary{background:#176bb5;border-color:#2d9cff}.btn.gold{background:#59431d;border-color:#a77d31;color:#ffe2a3}.btn.active{outline:2px solid var(--ok);outline-offset:-2px}
+    .status{white-space:pre-line;font-size:12px;line-height:1.55;color:var(--muted)}.status .ok{color:var(--ok)}
+    main{position:relative;min-width:0;overflow:hidden;background:radial-gradient(circle at 50% 35%,#142a43 0,#07111f 55%,#050b13 100%)}
+    canvas{display:block;width:100%;height:100%;touch-action:none}.hud{position:absolute;left:14px;bottom:14px;display:flex;gap:8px;flex-wrap:wrap;pointer-events:none}.tag{background:rgba(4,10,17,.76);border:1px solid rgba(101,139,170,.35);backdrop-filter:blur(8px);border-radius:9px;padding:7px 9px;font-size:11px;color:#c9d7e5}
+    .drop-overlay{position:absolute;inset:18px;border:2px dashed var(--blue);border-radius:18px;display:none;place-items:center;background:rgba(4,15,27,.82);z-index:9;font-size:18px;font-weight:800}.drop-overlay.show{display:grid}
+    .loading{position:absolute;inset:0;display:grid;place-items:center;background:#07111f;z-index:8}.spinner{width:42px;height:42px;border:3px solid #1b334b;border-top-color:var(--gold);border-radius:50%;animation:spin 1s linear infinite;margin:auto}.loading p{color:var(--muted);font-size:13px}@keyframes spin{to{transform:rotate(360deg)}}
+    .mobile-tools{display:none}
+    @media(max-width:860px){html,body{overflow:auto}.app{min-height:100%;height:auto;display:flex;flex-direction:column}header{position:sticky;top:0}.brand small{display:none}.header-actions{display:none}main{height:58vh;min-height:430px;order:1}aside{order:2;border-right:0;border-top:1px solid var(--line);overflow:visible}.mobile-tools{display:flex;position:absolute;right:10px;top:10px;gap:6px;z-index:6}.mobile-tools button{width:40px;height:40px;border-radius:10px;border:1px solid var(--line);background:rgba(7,17,31,.82);color:#fff}.hud{bottom:10px;left:10px}.tag:nth-child(n+3){display:none}}
+  </style>
+  <script type="importmap">
+  {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.165.0/examples/jsm/"}}
+  </script>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="brand"><div class="mark">心禹</div><div><b>心禹國際 LED 行動廣告車虛擬播放器</b><small>2.1 噸車｜滿版無框｜左側 90° 無縫 L 型顯示</small></div></div>
+    <div class="header-actions"><button class="pill" id="shotBtn">擷取畫面</button><button class="pill" id="fullBtn">全螢幕</button></div>
+  </header>
+
+  <aside>
+    <div class="section">
+      <h2>顯示內容</h2>
+      <label class="upload"><strong>左側 L 型螢幕：上傳同一支影片／圖片</strong><span>自動跨越左側主屏與 90° 轉角屏，採連續 UV 分割，不會重複畫面。</span><input id="leftMedia" type="file" accept="video/*,image/*"></label>
+      <label class="upload"><strong>右側平面螢幕：上傳影片／圖片</strong><span>滿版顯示，不含上下與四周裝飾框。</span><input id="rightMedia" type="file" accept="video/*,image/*"></label>
+      <label class="upload"><strong>車頭上方小螢幕（選用）</strong><span>可獨立放置品牌動畫或靜態圖片。</span><input id="frontMedia" type="file" accept="video/*,image/*"></label>
+      <p class="hint">左側 L 型總比例約 4.81：1.44（3.34:1），建議素材 1920×575 或等比例；右側比例約 1.75:1。</p>
+    </div>
+
+    <div class="section">
+      <h2>播放控制</h2>
+      <div class="row"><button class="btn primary" id="playBtn">全部播放</button><button class="btn" id="pauseBtn">全部暫停</button><button class="btn" id="muteBtn">靜音切換</button><button class="btn" id="clearBtn">清除素材</button></div>
+    </div>
+
+    <div class="section">
+      <h2>視角</h2>
+      <div class="row"><button class="btn gold" data-view="iso">立體視角</button><button class="btn" data-view="left">左側 L 型</button><button class="btn" data-view="right">右側平面</button><button class="btn" data-view="rear">車尾與門</button><button class="btn" id="rotateBtn">自動旋轉</button><button class="btn" id="resetBtn">重設視角</button></div>
+    </div>
+
+    <div class="section">
+      <h2>模型驗證</h2>
+      <div class="status" id="status">正在載入模型…</div>
+    </div>
+
+    <div class="section">
+      <h2>操作方式</h2>
+      <p>滑鼠左鍵旋轉、滾輪縮放、右鍵平移；手機以單指旋轉、雙指縮放與平移。素材只在本機瀏覽器中播放，不會上傳伺服器。</p>
+    </div>
+  </aside>
+
+  <main id="stage">
+    <div class="loading" id="loading"><div><div class="spinner"></div><p>載入行動廣告車模型中</p></div></div>
+    <div class="drop-overlay" id="dropOverlay">放開檔案，套用至左側 L 型螢幕</div>
+    <div class="mobile-tools"><button id="mobileFull">⛶</button><button id="mobileReset">↺</button></div>
+    <div class="hud"><div class="tag">滿版無框 LED</div><div class="tag">90° 無縫轉角</div><div class="tag">車尾右側唯一出入口門</div></div>
+  </main>
+</div>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+
+const MODEL_URL='./assets/models/Xinyu_2.1t_LED_Mobile_Ad_Truck_V2.glb';
+const LEFT_MAIN_W=3.69, LEFT_REAR_W=1.12, LEFT_TOTAL_W=LEFT_MAIN_W+LEFT_REAR_W;
+const mainFraction=LEFT_MAIN_W/LEFT_TOTAL_W, rearFraction=LEFT_REAR_W/LEFT_TOTAL_W;
+const stage=document.getElementById('stage'), statusEl=document.getElementById('status'), loading=document.getElementById('loading');
+const leftMedia=document.getElementById('leftMedia'), rightMedia=document.getElementById('rightMedia'), frontMedia=document.getElementById('frontMedia');
+const playBtn=document.getElementById('playBtn'), pauseBtn=document.getElementById('pauseBtn'), muteBtn=document.getElementById('muteBtn'), clearBtn=document.getElementById('clearBtn');
+const rotateBtn=document.getElementById('rotateBtn'), resetBtn=document.getElementById('resetBtn');
+const fullBtn=document.getElementById('fullBtn'), shotBtn=document.getElementById('shotBtn'), mobileFull=document.getElementById('mobileFull'), mobileReset=document.getElementById('mobileReset');
+
+const scene=new THREE.Scene();
+scene.background=new THREE.Color(0x07111f);
+scene.fog=new THREE.Fog(0x07111f,14,34);
+const camera=new THREE.PerspectiveCamera(40,1,.03,100);
+const renderer=new THREE.WebGLRenderer({antialias:true,preserveDrawingBuffer:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.outputColorSpace=THREE.SRGBColorSpace;
+renderer.shadowMap.enabled=true;
+renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+stage.prepend(renderer.domElement);
+
+const controls=new OrbitControls(camera,renderer.domElement);
+controls.enableDamping=true;controls.dampingFactor=.07;controls.target.set(0,1.5,0);controls.maxPolarAngle=Math.PI*.49;controls.minDistance=4;controls.maxDistance=18;
+scene.add(new THREE.HemisphereLight(0xcbe5ff,0x17202a,1.8));
+const key=new THREE.DirectionalLight(0xffffff,2.0);key.position.set(-5,9,7);key.castShadow=true;key.shadow.mapSize.set(2048,2048);scene.add(key);
+const rim=new THREE.DirectionalLight(0x4fa8ff,1.1);rim.position.set(7,5,-8);scene.add(rim);
+const floor=new THREE.Mesh(new THREE.PlaneGeometry(50,50),new THREE.MeshStandardMaterial({color:0x0b1724,roughness:.95,metalness:.05}));floor.rotation.x=-Math.PI/2;floor.receiveShadow=true;scene.add(floor);
+const grid=new THREE.GridHelper(30,30,0x345675,0x172d43);grid.material.opacity=.38;grid.material.transparent=true;scene.add(grid);
+
+let model=null;const videos=[];const objectUrls=[];const originalMaterials=new Map();
+const screenNames=['LED_LEFT_MAIN','LED_LEFT_REAR','LED_RIGHT_MAIN','LED_FRONT_HEADER'];
+function mesh(name){return model?.getObjectByName(name)||null}
+function ledOff(){return new THREE.MeshBasicMaterial({color:0x07121d,side:THREE.DoubleSide,toneMapped:false})}
+function resize(){const w=stage.clientWidth,h=stage.clientHeight;camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setSize(w,h,false)}
+window.addEventListener('resize',resize);resize();
+
+function setView(name){
+ const views={iso:[-7.7,4.8,7.5],left:[.8,2.25,9.2],right:[.7,2.25,-9.2],rear:[8.7,2.45,2.3]};
+ const p=views[name]||views.iso;camera.position.set(...p);controls.target.set(0,1.48,0);controls.update();
+}
+function validateModel(){
+ const found=screenNames.filter(n=>mesh(n));
+ const forbidden=[];model.traverse(o=>{if(/LED_(LEFT|RIGHT).*FRAME/i.test(o.name))forbidden.push(o.name)});
+ const a=mesh('LED_LEFT_MAIN'),b=mesh('LED_LEFT_REAR');
+ let seam='無法檢查';
+ if(a&&b){const ba=new THREE.Box3().setFromObject(a),bb=new THREE.Box3().setFromObject(b);const dx=Math.abs(ba.max.x-bb.min.x),dz=Math.abs(ba.max.z-bb.max.z);seam=(dx<.002&&dz<.002)?'通過（共同邊線 0 mm）':`需檢查（ΔX ${Math.round(dx*1000)} mm／ΔZ ${Math.round(dz*1000)} mm）`;}
+ statusEl.innerHTML=`<span class="ok">模型載入完成</span>\nLED 螢幕辨識：${found.length}/4\n螢幕外框物件：${forbidden.length===0?'0（通過）':forbidden.join(', ')}\n左側 90° 轉角：${seam}\n車尾右側門：${mesh('REAR_RIGHT_ACCESS_DOOR')?'已保留（通過）':'未辨識'}`;
+}
+new GLTFLoader().load(MODEL_URL,g=>{
+ model=g.scene;scene.add(model);model.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true;if(screenNames.includes(o.name)){originalMaterials.set(o.name,o.material);o.material=ledOff();o.renderOrder=2}}});
+ setView('iso');validateModel();loading.remove();
+},undefined,e=>{loading.innerHTML='<div><p style="color:#ff8f8f">模型載入失敗。請確認已透過 GitHub Pages 或本機 HTTP 伺服器開啟。</p></div>';statusEl.textContent=String(e)});
+
+function disposeCurrentMedia(){
+ videos.forEach(v=>{v.pause();v.removeAttribute('src');v.load()});videos.length=0;
+ objectUrls.splice(0).forEach(URL.revokeObjectURL);
+ screenNames.forEach(n=>{const m=mesh(n);if(m){m.material?.map?.dispose?.();m.material?.dispose?.();m.material=ledOff()}});
+}
+function materialForTexture(tex){return new THREE.MeshBasicMaterial({map:tex,side:THREE.DoubleSide,toneMapped:false})}
+function videoTexture(video,repeatX=1,offsetX=0){const t=new THREE.VideoTexture(video);t.colorSpace=THREE.SRGBColorSpace;t.flipY=false;t.minFilter=THREE.LinearFilter;t.magFilter=THREE.LinearFilter;t.wrapS=THREE.ClampToEdgeWrapping;t.repeat.set(repeatX,1);t.offset.set(offsetX,0);return t}
+function imageTexture(url,repeatX=1,offsetX=0){return new Promise((resolve,reject)=>new THREE.TextureLoader().load(url,t=>{t.colorSpace=THREE.SRGBColorSpace;t.flipY=false;t.wrapS=THREE.ClampToEdgeWrapping;t.repeat.set(repeatX,1);t.offset.set(offsetX,0);resolve(t)},undefined,reject))}
+async function applyFile(file,role){
+ if(!file||!model)return;const url=URL.createObjectURL(file);objectUrls.push(url);const isVideo=file.type.startsWith('video/');
+ let source=null;if(isVideo){source=document.createElement('video');source.src=url;source.loop=true;source.muted=true;source.playsInline=true;source.preload='auto';videos.push(source);}
+ const mk=async(repeat,offset)=>isVideo?videoTexture(source,repeat,offset):imageTexture(url,repeat,offset);
+ if(role==='left'){
+   const t1=await mk(mainFraction,0),t2=await mk(rearFraction,mainFraction);mesh('LED_LEFT_MAIN').material=materialForTexture(t1);mesh('LED_LEFT_REAR').material=materialForTexture(t2);
+ }else if(role==='right'){mesh('LED_RIGHT_MAIN').material=materialForTexture(await mk(1,0));}
+ else{mesh('LED_FRONT_HEADER').material=materialForTexture(await mk(1,0));}
+ if(isVideo)source.play().catch(()=>{});
+}
+leftMedia.onchange=e=>applyFile(e.target.files[0],'left');rightMedia.onchange=e=>applyFile(e.target.files[0],'right');frontMedia.onchange=e=>applyFile(e.target.files[0],'front');
+playBtn.onclick=()=>videos.forEach(v=>v.play());pauseBtn.onclick=()=>videos.forEach(v=>v.pause());muteBtn.onclick=()=>videos.forEach(v=>v.muted=!v.muted);clearBtn.onclick=disposeCurrentMedia;
+document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>setView(b.dataset.view));
+rotateBtn.onclick=()=>{controls.autoRotate=!controls.autoRotate;controls.autoRotateSpeed=1.25;rotateBtn.classList.toggle('active',controls.autoRotate)};
+resetBtn.onclick=()=>setView('iso');mobileReset.onclick=()=>setView('iso');
+function toggleFull(){if(!document.fullscreenElement)stage.requestFullscreen?.();else document.exitFullscreen?.()}fullBtn.onclick=toggleFull;mobileFull.onclick=toggleFull;
+shotBtn.onclick=()=>{renderer.render(scene,camera);const a=document.createElement('a');a.download='心禹國際_LED行動廣告車_虛擬預覽.png';a.href=renderer.domElement.toDataURL('image/png');a.click()};
+
+const dropOverlay=document.getElementById('dropOverlay');
+['dragenter','dragover'].forEach(ev=>stage.addEventListener(ev,e=>{e.preventDefault();dropOverlay.classList.add('show')}));
+['dragleave','drop'].forEach(ev=>stage.addEventListener(ev,e=>{e.preventDefault();dropOverlay.classList.remove('show')}));
+stage.addEventListener('drop',e=>{const f=e.dataTransfer.files[0];if(f)applyFile(f,'left')});
+
+renderer.setAnimationLoop(()=>{controls.update();renderer.render(scene,camera)});
+</script>
+</body>
+</html>
