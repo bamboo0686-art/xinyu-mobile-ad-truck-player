@@ -1,0 +1,10 @@
+*.zip
+node_modules/
+.DS_Store
+Thumbs.db
+.env
+.env.*
+__pycache__/
+*.log
+/work/
+/outputs/
