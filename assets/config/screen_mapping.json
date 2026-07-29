@@ -9,5 +9,11 @@
   ],
   "left_l_wrap": {"total_unfolded_size_m": [4.81, 1.44], "aspect_ratio": 3.3402777778, "recommended_video": "1920x575 or proportional"},
   "display_finish": {"left_main": "full_bleed_frameless", "left_rear": "full_bleed_frameless", "right_main": "full_bleed_frameless", "left_90_degree_joint": "shared_geometry_edge_zero_gap"},
+  "verified_geometry_m": {
+    "left_joint": {"x": 3.021, "z": 1.066, "y_bottom": 1.29, "y_top": 2.73, "gap": 0.0},
+    "left_main_bounds": {"x": [-0.669, 3.021], "y": [1.29, 2.73], "z": 1.066},
+    "left_rear_bounds": {"x": 3.021, "y": [1.29, 2.73], "z": [-0.054, 1.066]},
+    "right_main_bounds": {"x": [-0.9, 1.62], "y": [1.29, 2.73], "z": -1.066}
+  },
   "non_negotiable": {"rear_right_door_mesh": "REAR_RIGHT_ACCESS_DOOR", "note": "The rear-right cargo access door is the only door on the LED cargo box."}
 }
