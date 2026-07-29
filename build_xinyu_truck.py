@@ -30,7 +30,7 @@ MATS = {
     'blue': mat('XINYU_BLUE', (0.025, 0.22, 0.46, 1.0), metallic=0.15, roughness=0.42),
     'blue_dark': mat('XINYU_BLUE_DARK', (0.012, 0.075, 0.14, 1.0), metallic=0.2, roughness=0.38),
     'black': mat('STRUCTURE_BLACK', (0.015, 0.018, 0.022, 1.0), metallic=0.15, roughness=0.54),
-    'screen': mat('LED_SCREEN_OFF', (0.012, 0.018, 0.025, 1.0), metallic=0.0, roughness=0.28, emissive=(0.02, 0.025, 0.035)),
+    'screen': mat('LED_FRAMELESS_FULL_BLEED', (0.008, 0.012, 0.018, 1.0), metallic=0.0, roughness=0.22, emissive=(0.015, 0.02, 0.028)),
     'glass': mat('DARK_GLASS', (0.025, 0.06, 0.09, 0.82), metallic=0.0, roughness=0.14),
     'silver': mat('METAL_SILVER', (0.52, 0.56, 0.60, 1.0), metallic=0.75, roughness=0.28),
     'tire': mat('TIRE_RUBBER', (0.012, 0.012, 0.014, 1.0), metallic=0.0, roughness=0.88),
@@ -190,7 +190,9 @@ def build_scene():
     # FULL-BLEED LED screens: no visible top, bottom, side or corner frame bars.
     # The left side and rear-left planes share the exact same 90-degree corner line,
     # so the L-shaped display has zero geometric gap at the joint.
-    surface_offset = 0.014
+    # The active faces sit 1 mm outside the widest cargo cap/rail envelope.
+    # This prevents any cabinet geometry from masking the LED perimeter.
+    surface_offset = 0.041
     rear_x = cargo_rear + surface_offset
     left_z = overall_width/2 + surface_offset
 
