@@ -2,18 +2,20 @@
   "model": "assets/models/Xinyu_2.1t_LED_Mobile_Ad_Truck_V2.glb",
   "coordinate_system": {"up": "Y", "units": "meters"},
   "screens": [
-    {"mesh": "LED_LEFT_MAIN", "role": "left_main", "physical_size_m": [3.69, 1.44], "uv_range": [0.0, 0.7671517672]},
-    {"mesh": "LED_LEFT_REAR", "role": "left_rear_L_wrap", "physical_size_m": [1.12, 1.44], "uv_range": [0.7671517672, 1.0]},
-    {"mesh": "LED_RIGHT_MAIN", "role": "right_main", "physical_size_m": [2.52, 1.44]},
-    {"mesh": "LED_FRONT_HEADER", "role": "front_header_optional", "physical_size_m": [1.68, 0.64]}
+    {"mesh": "LED_LEFT_MAIN", "role": "left_main_full_cargo_surface", "physical_size_m": [4.071, 2.26], "uv_range": [0.0, 0.7825836217]},
+    {"mesh": "LED_LEFT_REAR", "role": "left_rear_full_height_L_wrap", "physical_size_m": [1.131, 2.26], "uv_range": [0.7825836217, 1.0]},
+    {"mesh": "LED_RIGHT_MAIN", "role": "right_main_full_cargo_surface", "physical_size_m": [4.071, 2.26]},
+    {"mesh": "LED_FRONT_HEADER", "role": "legacy_front_header_hidden", "physical_size_m": [1.68, 0.64]}
   ],
-  "left_l_wrap": {"total_unfolded_size_m": [4.81, 1.44], "aspect_ratio": 3.3402777778, "recommended_video": "1920x575 or proportional"},
-  "display_finish": {"left_main": "full_bleed_frameless", "left_rear": "full_bleed_frameless", "right_main": "full_bleed_frameless", "left_90_degree_joint": "shared_geometry_edge_zero_gap"},
+  "left_l_wrap": {"total_unfolded_size_m": [5.202, 2.26], "aspect_ratio": 2.3017699115, "recommended_video": "1920x834 or proportional"},
+  "display_finish": {"left_main": "full_cargo_surface_led", "left_rear": "full_height_frameless_wrap", "right_main": "full_cargo_surface_led", "left_90_degree_joint": "shared_geometry_edge_zero_gap"},
   "verified_geometry_m": {
-    "left_joint": {"x": 3.021, "z": 1.066, "y_bottom": 1.29, "y_top": 2.73, "gap": 0.0},
-    "left_main_bounds": {"x": [-0.669, 3.021], "y": [1.29, 2.73], "z": 1.066},
-    "left_rear_bounds": {"x": 3.021, "y": [1.29, 2.73], "z": [-0.054, 1.066]},
-    "right_main_bounds": {"x": [-0.9, 1.62], "y": [1.29, 2.73], "z": -1.066}
+    "left_joint": {"x": 3.021, "z": 1.026, "y_bottom": 0.82, "y_top": 3.08, "gap": 0.0},
+    "left_main_bounds": {"x": [-1.05, 3.021], "y": [0.82, 3.08], "z": 1.026},
+    "left_rear_bounds": {"x": 3.021, "y": [0.82, 3.08], "z": [-0.105, 1.026]},
+    "right_main_bounds": {"x": [-1.05, 3.021], "y": [0.82, 3.08], "z": -1.026}
   },
+  "hidden_cargo_exterior_meshes": ["CARGO_ROOF_CAP", "CARGO_LOWER_RAIL", "FRONT_HEADER_STRUCTURE", "RIGHT_REAR_SERVICE_PANEL", "RIGHT_SERVICE_VENT_1", "RIGHT_SERVICE_VENT_2", "RIGHT_SERVICE_VENT_3", "RIGHT_SERVICE_VENT_4", "RIGHT_SERVICE_VENT_5"],
+  "collapsed_visual_meshes": ["LED_FRONT_HEADER"],
   "non_negotiable": {"rear_right_door_mesh": "REAR_RIGHT_ACCESS_DOOR", "note": "The rear-right cargo access door is the only door on the LED cargo box."}
 }
