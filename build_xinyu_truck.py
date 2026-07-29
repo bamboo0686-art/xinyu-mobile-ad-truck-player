@@ -143,8 +143,6 @@ def build_scene():
 
     # Cargo body / LED cabinet shell
     box(scene, 'CARGO_BODY', (cargo_len, cargo_height, overall_width), (cargo_center, (cargo_bottom+cargo_top)/2, 0), MATS['blue_dark'])
-    box(scene, 'CARGO_ROOF_CAP', (cargo_len + 0.08, 0.09, overall_width + 0.08), (cargo_center, cargo_top + 0.045, 0), MATS['black'])
-    box(scene, 'CARGO_LOWER_RAIL', (cargo_len + 0.08, 0.10, overall_width + 0.08), (cargo_center, cargo_bottom + 0.05, 0), MATS['black'])
 
     # Cab
     box(scene, 'CAB_LOWER_BODY', (1.95, 0.72, 1.90), (-2.05, 0.95, 0), MATS['blue'])
@@ -162,10 +160,10 @@ def build_scene():
     box(scene, 'MIRROR_LEFT', (0.08, 0.27, 0.18), (-2.79, 2.02, 1.16), MATS['black'])
     box(scene, 'MIRROR_RIGHT', (0.08, 0.27, 0.18), (-2.79, 2.02, -1.16), MATS['black'])
     # roof fairing / front header panel visible above cab
-    box(scene, 'FRONT_HEADER_STRUCTURE', (0.16, 0.72, 1.88), (-1.12, 2.67, 0), MATS['black'])
-    screen_quad(scene, 'LED_FRONT_HEADER', [
+    front_header = screen_quad(scene, 'LED_FRONT_HEADER', [
         [-1.205, 2.33, -0.84], [-1.205, 2.33, 0.84], [-1.205, 2.97, 0.84], [-1.205, 2.97, -0.84]
     ])
+    front_header.apply_scale(0.0)
 
     # Headlights / indicators
     for z in (-0.67, 0.67):
@@ -184,22 +182,22 @@ def build_scene():
         box(scene, f'FENDER_RIGHT_{x}', (0.95, 0.10, 0.12), (x, 0.91, -0.98), MATS['blue_dark'])
 
     # LED screens — independent named meshes for video texture assignment.
-    led_yc = 2.01
-    led_h = 1.44
+    led_yc = (cargo_bottom + cargo_top) / 2
+    led_h = cargo_top - cargo_bottom
 
     # FULL-BLEED LED screens: no visible top, bottom, side or corner frame bars.
     # The left side and rear-left planes share the exact same 90-degree corner line,
     # so the L-shaped display has zero geometric gap at the joint.
-    # The active faces sit 1 mm outside the widest cargo cap/rail envelope.
-    # This prevents any cabinet geometry from masking the LED perimeter.
-    surface_offset = 0.041
-    rear_x = cargo_rear + surface_offset
-    left_z = overall_width/2 + surface_offset
+    # The LED planes are the complete visible cargo-box skin, not inset panels.
+    side_surface_offset = 0.001
+    rear_surface_offset = 0.041
+    rear_x = cargo_rear + rear_surface_offset
+    left_z = overall_width/2 + side_surface_offset
 
-    # Left side main screen: 3.69m x 1.44m, extending exactly to the rear corner.
-    left_w = 3.69
+    # Left side main screen covers the complete cargo length and height.
     left_x_max = rear_x
-    left_x_min = left_x_max - left_w
+    left_x_min = cargo_front
+    left_w = left_x_max - left_x_min
     left_xc = (left_x_min + left_x_max) / 2
     screen_quad(scene, 'LED_LEFT_MAIN', [
         [left_x_min, led_yc-led_h/2, left_z],
@@ -210,7 +208,9 @@ def build_scene():
 
     # Rear-left screen forms the seamless 90-degree L wrap.
     # Its outer-left edge is exactly the same line as LED_LEFT_MAIN's rear edge.
-    rear_screen_w = 1.12
+    # Extend to the retained rear-right door frame, leaving no exposed rear
+    # body strip between the wrap screen and the door structure.
+    rear_screen_w = 1.131
     rear_z_max = left_z
     rear_z_min = rear_z_max - rear_screen_w
     rear_screen_zc = (rear_z_min + rear_z_max) / 2
@@ -221,10 +221,10 @@ def build_scene():
         [rear_x, led_yc+led_h/2, rear_z_max],
     ])
 
-    # Right side flat screen: 2.52m x 1.44m, also full-bleed with no frame bars.
-    right_w = 2.52
-    right_xc = cargo_front + 0.15 + right_w/2
-    right_z = -overall_width/2 - surface_offset
+    # Right display replaces the complete cargo side surface.
+    right_w = rear_x - cargo_front
+    right_xc = (cargo_front + rear_x) / 2
+    right_z = -overall_width/2 - side_surface_offset
     # reverse vertex order so the outward face is correctly oriented
     screen_quad(scene, 'LED_RIGHT_MAIN', [
         [right_xc+right_w/2, led_yc-led_h/2, right_z],
@@ -232,15 +232,6 @@ def build_scene():
         [right_xc-right_w/2, led_yc+led_h/2, right_z],
         [right_xc+right_w/2, led_yc+led_h/2, right_z],
     ])
-
-    # Right-side rear equipment/service panel (not a door).
-    equip_x0 = right_xc + right_w/2 + 0.10
-    equip_w = cargo_rear - equip_x0 - 0.08
-    if equip_w > 0.15:
-        box(scene, 'RIGHT_REAR_SERVICE_PANEL', (equip_w, 1.65, 0.035), (equip_x0+equip_w/2, 1.96, right_z+0.006), MATS['blue_dark'])
-        # ventilation slats
-        for i in range(5):
-            box(scene, f'RIGHT_SERVICE_VENT_{i+1}', (equip_w*0.64, 0.035, 0.018), (equip_x0+equip_w/2, 1.60+i*0.12, right_z-0.02), MATS['silver'])
 
     # Unique rear-right access door, full-height aligned with screen zone.
     door_w = 0.80
@@ -339,9 +330,9 @@ def main():
         'model': glb_path.name,
         'coordinate_system': {'up': 'Y', 'units': 'meters'},
         'screens': [
-            {'mesh': 'LED_LEFT_MAIN', 'role': 'left_main', 'physical_size_m': [3.69, 1.44], 'recommended_video': '1536x600 or proportional 2.5625:1'},
-            {'mesh': 'LED_LEFT_REAR', 'role': 'left_rear_L_wrap', 'physical_size_m': [1.12, 1.44], 'recommended_video': 'same source crop or dedicated vertical crop'},
-            {'mesh': 'LED_RIGHT_MAIN', 'role': 'right_main', 'physical_size_m': [2.52, 1.44], 'recommended_video': '1536x878 or proportional 1.75:1'},
+            {'mesh': 'LED_LEFT_MAIN', 'role': 'left_main_full_cargo_surface', 'physical_size_m': [4.071, 2.26], 'recommended_video': 'shared full L-wrap source'},
+            {'mesh': 'LED_LEFT_REAR', 'role': 'left_rear_full_height_L_wrap', 'physical_size_m': [1.131, 2.26], 'recommended_video': 'shared full L-wrap source'},
+            {'mesh': 'LED_RIGHT_MAIN', 'role': 'right_main_full_cargo_surface', 'physical_size_m': [4.071, 2.26], 'recommended_video': 'full cargo-side source'},
             {'mesh': 'LED_FRONT_HEADER', 'role': 'front_header_optional', 'physical_size_m': [1.68, 0.64], 'recommended_video': 'wide logo/static content'},
         ],
         'non_negotiable': {
